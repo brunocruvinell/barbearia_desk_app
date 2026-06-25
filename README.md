@@ -1,4 +1,4 @@
-# ✂️ Sistema de Gestão de Barbearia - Desk App I
+# ✂️ Sistema de Gestão de Barbearia - Desk App II
 
 Repositório destinado ao projeto prático de Programação Orientada a Objetos (Engenharia de Software - UnB). O objetivo deste sistema é aplicar os conceitos arquiteturais e pilares da orientação a objetos no desenvolvimento de uma aplicação Desktop utilizando Python e sua biblioteca nativa de interface gráfica.
 
@@ -11,10 +11,13 @@ Repositório destinado ao projeto prático de Programação Orientada a Objetos 
 
 O diagrama abaixo ilustra a estrutura de classes, atributos, métodos e as relações entre as entidades do domínio da barbearia.
 
+```mermaid
 classDiagram
     class Barbearia {
         -String nome
         -List~Agendamento~ agendamentos
+        -List~Cliente~ clientes
+        -List~Barbeiro~ barbeiros
         +registrarAgendamento(Agendamento)
     }
 
@@ -29,7 +32,7 @@ classDiagram
     }
 
     class Barbeiro {
-        -String especialidade
+        %% Herda de Pessoa sem atributos adicionais na versão atual
     }
 
     class Servico {
@@ -72,11 +75,11 @@ classDiagram
     class Agendamento {
         -Cliente cliente
         -Barbeiro barbeiro
-        -List~Servico~ servicos
+        -Servico servico
         -String dataHora
         -StatusAgendamento status
         -FormaPagamento metodoPagamento
-        +finalizarAtendimento(GeradorRecibo recibo)
+        +finalizarAtendimento(pagamento FormaPagamento, gerador GeradorRecibo)
     }
 
     class GeradorRecibo {
@@ -95,6 +98,8 @@ classDiagram
 
     %% Relações Estruturais e Associações
     Barbearia *-- Agendamento : Composição
+    Barbearia o-- Cliente : Agregação
+    Barbearia o-- Barbeiro : Agregação
     Agendamento -- Cliente : Associação
     Agendamento -- Barbeiro : Associação
     Agendamento -- Servico : Associação
