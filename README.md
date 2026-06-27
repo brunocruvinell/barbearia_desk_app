@@ -3,7 +3,7 @@
 Repositório destinado ao projeto prático de Programação Orientada a Objetos (Engenharia de Software - UnB). O objetivo deste sistema é aplicar os conceitos arquiteturais e pilares da orientação a objetos no desenvolvimento de uma aplicação Desktop utilizando Python e sua biblioteca nativa de interface gráfica.
 
 ## 🎥 Apresentação do Projeto
-[**Clique aqui para assistir ao vídeo de apresentação e demonstração do sistema no YouTube**](https://youtu.be/vLQ6MQ0niQg)
+[**Clique aqui para assistir ao vídeo de apresentação e demonstração do sistema no YouTube**](https://youtu.be/qOcRvk9wGVA?si=aDKSLv4hqbFOO38c)
 
 ---
 
@@ -108,6 +108,7 @@ classDiagram
 
     %% Relação de Dependência
     Agendamento ..> GeradorRecibo : Dependência
+```
 
 🧠 Pilares da Orientação a Objetos Aplicados
 Este projeto foi estruturado para atender aos 5 requisitos fundamentais:
