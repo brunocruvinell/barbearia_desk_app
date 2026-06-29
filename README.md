@@ -1,24 +1,39 @@
-# ✂️ Sistema de Gestão de Barbearia - Desk App II
+# ✂️ Sistema de Gestão de Barbearia - Desk App III (Com Banco de Dados)
 
-Repositório destinado ao projeto prático de Programação Orientada a Objetos (Engenharia de Software - UnB). O objetivo deste sistema é aplicar os conceitos arquiteturais e pilares da orientação a objetos no desenvolvimento de uma aplicação Desktop utilizando Python e sua biblioteca nativa de interface gráfica.
+Repositório destinado ao projeto prático de Programação Orientada a Objetos (Engenharia de Software - UnB). O objetivo deste sistema é aplicar os conceitos arquiteturais e pilares da orientação a objetos no desenvolvimento de uma aplicação Desktop utilizando Python, interface gráfica (Tkinter) e persistência de dados.
 
 ## 🎥 Apresentação do Projeto
+
 [**Clique aqui para assistir ao vídeo de apresentação e demonstração do sistema no YouTube**](https://youtu.be/vLQ6MQ0niQg)
 
----
+## O que mudou na Versão III?
+
+A grande atualização desta versão é a implementação de um **Banco de Dados Relacional**. O sistema deixou de usar armazenamento em memória (volátil) e passou a persistir clientes, barbeiros e agendamentos utilizando o padrão arquitetural **DAO (Data Access Object) / Repository**, isolando a regra de negócio do acesso a dados.
 
 ## 🏗️ Modelagem do Sistema (Diagrama UML)
 
-O diagrama abaixo ilustra a estrutura de classes, atributos, métodos e as relações entre as entidades do domínio da barbearia.
+O diagrama abaixo ilustra a estrutura de classes, atributos, métodos, relações entre as entidades e a nova camada de persistência.
 
 ```mermaid
 classDiagram
     class Barbearia {
         -String nome
-        -List~Agendamento~ agendamentos
-        -List~Cliente~ clientes
-        -List~Barbeiro~ barbeiros
         +registrarAgendamento(Agendamento)
+    }
+
+    class DatabaseManager {
+        <<Singleton>>
+        -Connection conexao
+        +conectar()
+        +desconectar()
+        +executarQuery(String query)
+    }
+
+    class DAO {
+        <<interface>>
+        +salvar(Object)
+        +buscarTodos() List
+        +deletar(int id)
     }
 
     class Pessoa {
@@ -32,7 +47,6 @@ classDiagram
     }
 
     class Barbeiro {
-        %% Herda de Pessoa sem atributos adicionais na versão atual
     }
 
     class Servico {
@@ -64,14 +78,6 @@ classDiagram
         +processarPagamento(valor float) float
     }
 
-    class PagamentoPix {
-        +processarPagamento(valor float) float
-    }
-
-    class PagamentoCartao {
-        +processarPagamento(valor float) float
-    }
-
     class Agendamento {
         -Cliente cliente
         -Barbeiro barbeiro
@@ -82,54 +88,48 @@ classDiagram
         +finalizarAtendimento(pagamento FormaPagamento, gerador GeradorRecibo)
     }
 
-    class GeradorRecibo {
-        +imprimir(String dados)
-    }
-
     %% Relações de Herança
     Pessoa <|-- Cliente : Herança
     Pessoa <|-- Barbeiro : Herança
     Servico <|-- CorteCabelo : Herança
     Servico <|-- TratamentoBarba : Herança
 
-    %% Relação de Implementação (Strategy Pattern)
-    FormaPagamento <|.. PagamentoPix : Implementa
-    FormaPagamento <|.. PagamentoCartao : Implementa
+    %% Padrões e Interfaces
+    DAO <|.. DatabaseManager : Implementa Persistência
+    Barbearia ..> DAO : Utiliza
 
     %% Relações Estruturais e Associações
     Barbearia *-- Agendamento : Composição
-    Barbearia o-- Cliente : Agregação
-    Barbearia o-- Barbeiro : Agregação
     Agendamento -- Cliente : Associação
     Agendamento -- Barbeiro : Associação
     Agendamento -- Servico : Associação
     Agendamento -- StatusAgendamento : Associação
     Agendamento -- FormaPagamento : Associação
-
-    %% Relação de Dependência
-    Agendamento ..> GeradorRecibo : Dependência
-
 🧠 Pilares da Orientação a Objetos Aplicados
-Este projeto foi estruturado para atender aos 5 requisitos fundamentais:
+Este projeto foi estruturado para atender aos 5 requisitos fundamentais, além de introduzir conceitos de persistência:
 
-Herança: Aplicada na abstração de Pessoa (pai de Cliente e Barbeiro) e Servico (pai de CorteCabelo e TratamentoBarba).
+Herança: Aplicada na abstração de Pessoa e Servico.
 
-Polimorfismo: Implementado através da sobrescrita (override) do método abstrato calcular_preco() nas classes de serviços específicos.
+Polimorfismo: Implementado através da sobrescrita do método calcular_preco() e nas regras de pagamento.
 
-Composição: Relação estrita entre Barbearia e Agendamento. Se a barbearia deixar de existir, os agendamentos registrados sob ela também deixam.
+Composição e Agregação: Relação estrita entre Barbearia e os seus elementos.
 
-Associação: Relações de interação mútua onde o Agendamento conhece as instâncias de Cliente, Barbeiro e Servico.
+Associação: Relações de interação mútua onde o Agendamento conhece as instâncias.
 
-Dependência: A classe Agendamento depende momentaneamente do GeradorRecibo no método finalizar_atendimento() para cumprir sua função, sem guardar um vínculo de estado com ela.
+Dependência: A classe Agendamento depende momentaneamente do GeradorRecibo.
 
-Além dos requisitos básicos, o projeto implementa o padrão de projeto arquitetural Strategy (por meio de interfaces) para o processamento de pagamentos flexíveis e utilização de Enums para controle rigoroso de estado do atendimento.
+Padrões Adicionais: Introdução do padrão DAO (Data Access Object) para isolar as operações de CRUD no banco de dados, mantendo as classes de domínio puras.
 
 🛠️ Tecnologias Utilizadas
 Linguagem: Python 3.x
 
-Interface Gráfica: Tkinter (Biblioteca nativa, dispensando a instalação de dependências externas)
+Interface Gráfica: Tkinter (Biblioteca nativa)
 
-Estruturação: MVC (Model-View-Controller) simplificado para separar regra de negócio da interface.
+Banco de Dados: SQLite
+
+Conector: sqlite3 (Biblioteca nativa do Python, sem necessidade de instalações externas)
+
+Estruturação: MVC (Model-View-Controller) integrado com camada de Persistência (DAO).
 
 🚀 Como Executar o Projeto
 Para rodar a aplicação localmente, siga os passos abaixo. Não é necessária a instalação de pacotes via pip, pois o sistema utiliza apenas bibliotecas padrão do Python.
