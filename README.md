@@ -105,6 +105,7 @@ classDiagram
     Agendamento -- Servico : Associação
     Agendamento -- StatusAgendamento : Associação
     Agendamento -- FormaPagamento : Associação
+```
 
 🧠 Pilares da Orientação a Objetos Aplicados
 Este projeto foi estruturado para atender aos 5 requisitos fundamentais, além de introduzir conceitos de persistência:
